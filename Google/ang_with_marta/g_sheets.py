@@ -1,13 +1,13 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
+import pandas as pd
 
 class GcpConnect:
     
     sheet_name = 'Gra w słówka'
     
     # Ścieżka do pliku JSON z kluczami dostępu
-    credentials_file = './angwithmarta.json'
+    credentials_file = 'secrets/angwithmarta.json'
 
     # Zakres uprawnień
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -23,6 +23,13 @@ client = gcp.authorize()
 sheet = client.open(gcp.sheet_name).sheet1
 
 # get all
-plantas = sheet.get_all_values()
+data = sheet.get_all_values()
 
-print(type(plantas))
+#print(data)
+
+column_names = ['week','data','Beata','tłumaczenie','t1','Marta','tłumaczenie','t2']
+
+df = pd.DataFrame(data, columns=column_names)
+
+
+print(df)

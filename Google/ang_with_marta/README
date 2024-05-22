@@ -1,3 +1,4 @@
 conda activate google
 
 pip install gspread
+pip install pandas
