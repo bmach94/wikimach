@@ -5,7 +5,6 @@ import pandas as pd
 class GcpConnect:
     
     sheet_name = 'Gra w słówka'
-    
     # Ścieżka do pliku JSON z kluczami dostępu
     credentials_file = 'secrets/angwithmarta.json'
 
@@ -17,19 +16,32 @@ class GcpConnect:
         credentials = ServiceAccountCredentials.from_json_keyfile_name(self.credentials_file, self.scope)
         return gspread.authorize(credentials) # return client
 
-
+class Xlsx:
+    
+    sheet_name = 'Gra w słówka'
+    
+    def __init__(self, gClient, columnNames = ['week','data','Beata','tłumaczenie','t1','Marta','tłumaczenie','t2']):
+        self._columnNames = columnNames
+        self.gclient = gClient
+        
+    # connect with sheet    
+    def openSheet(self):
+        return self.gclient.open(self.sheet_name).sheet1
+        
+    # get all values    
+    def getAll(self, sheet):
+        #sheet = xlsx.openSheet()
+        return sheet.get_all_values()
+    
+    # read all columns
+    def pd_returnAll(self):
+        return pd.DataFrame(self.getAll(self.openSheet()), columns=self._columnNames)
+    
+# connect with GCP    
 gcp = GcpConnect()
 client = gcp.authorize()
-sheet = client.open(gcp.sheet_name).sheet1
 
-# get all
-data = sheet.get_all_values()
-
-#print(data)
-
-column_names = ['week','data','Beata','tłumaczenie','t1','Marta','tłumaczenie','t2']
-
-df = pd.DataFrame(data, columns=column_names)
-
-
-print(df)
+# connect with sheet
+xlsx = Xlsx(client)
+# print all columns
+print(xlsx.pd_returnAll())
