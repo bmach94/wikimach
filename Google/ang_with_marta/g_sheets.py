@@ -25,7 +25,9 @@ class Xlsx:
         self.gclient = gClient
         
     # connect with sheet    
-    def openSheet(self):
+    def openSheet(self, sheetNumber=1):
+        if sheetNumber == 2:
+            return self.gclient.open(self.sheet_name).get_worksheet(1) # the second worksheet
         return self.gclient.open(self.sheet_name).sheet1
         
     # get all values    
@@ -33,9 +35,10 @@ class Xlsx:
         #sheet = xlsx.openSheet()
         return sheet.get_all_values()
     
-    # read all columns
+    # read all columns, return dataframe
     def pd_returnAll(self):
-        return pd.DataFrame(self.getAll(self.openSheet()), columns=self._columnNames)
+        data = self.getAll(self.openSheet())
+        return pd.DataFrame(data)
     
 # connect with GCP    
 gcp = GcpConnect()
@@ -44,4 +47,21 @@ client = gcp.authorize()
 # connect with sheet
 xlsx = Xlsx(client)
 # print all columns
-print(xlsx.pd_returnAll())
+#print(xlsx.pd_returnAll())
+
+#df = xlsx.pd_returnAll()
+#print(df[2]) # #english
+
+sheet2 = xlsx.openSheet(2) # get the second worksheet
+df2 = xlsx.getAll(sheet2)
+#print(df2[2])
+
+user = "Marta"
+
+dictionary = df2[1:]
+if user == "Beata":
+    for i in dictionary: # print all
+        print(i[0:3]) # [1:] - all; [0] - row; [] - columns
+elif user == "Marta":
+    for i in dictionary: # print all
+        print(i[4:7]) # [1:] - all; [0] - row; [] - columns
