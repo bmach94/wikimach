@@ -1,0 +1,20 @@
+Users:
+  - Beata
+  - Marta
+
+
+Beata:
+  - 0 # index of column of worksheet
+
+Marta:
+  - 4 # index of column of worksheet
+
+
+GcpConnect:
+    # Ścieżka do pliku JSON z kluczami dostępu
+  credentials_file: 'secrets/angwithmarta.json'
+    # Zakres uprawnień
+  scope: ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+
+Xlsx:
+  sheet_name: 'Gra w słówka'

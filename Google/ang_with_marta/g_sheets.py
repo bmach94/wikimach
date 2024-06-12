@@ -2,33 +2,42 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 
-class GcpConnect:
+# cofig file
+import yaml
+
+import time
+
+class Config():
     
-    sheet_name = 'Gra w słówka'
-    # Ścieżka do pliku JSON z kluczami dostępu
-    credentials_file = 'secrets/angwithmarta.json'
+    def loadConfig(self):
+        with open("config.yaml", 'r') as file:
+            config = yaml.safe_load(file)
+        return config
 
-    # Zakres uprawnień
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
+class GcpConnect(Config):
+    
+    def __init__(self):
+        self.config = self.loadConfig()
+    
     def authorize(self):
+        
+        #config = self.loadConfig()
         # Autoryzacja z użyciem danych uwierzytelniających
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(self.credentials_file, self.scope)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(self.config['GcpConnect']['credentials_file'], self.config['GcpConnect']['scope'])
         return gspread.authorize(credentials) # return client
 
-class Xlsx:
-    
-    sheet_name = 'Gra w słówka'
+class Xlsx(Config):
     
     def __init__(self, gClient, columnNames = ['week','data','Beata','tłumaczenie','t1','Marta','tłumaczenie','t2']):
         self._columnNames = columnNames
         self.gclient = gClient
-        
+        self.config = self.loadConfig()
     # connect with sheet    
     def openSheet(self, sheetNumber=1):
+        
         if sheetNumber == 2:
-            return self.gclient.open(self.sheet_name).get_worksheet(1) # the second worksheet
-        return self.gclient.open(self.sheet_name).sheet1
+            return self.gclient.open(self.config['Xlsx']['sheet_name']).get_worksheet(1) # the second worksheet
+        return self.gclient.open(self.config['Xlsx']['sheet_name']).sheet1
         
     # get all values    
     def getAll(self, sheet):
@@ -40,28 +49,39 @@ class Xlsx:
         data = self.getAll(self.openSheet())
         return pd.DataFrame(data)
     
+
 # connect with GCP    
-gcp = GcpConnect()
-client = gcp.authorize()
+client = GcpConnect().authorize()
 
 # connect with sheet
 xlsx = Xlsx(client)
-# print all columns
-#print(xlsx.pd_returnAll())
 
-#df = xlsx.pd_returnAll()
-#print(df[2]) # #english
+# load parameters
+config = Config().loadConfig()
 
-sheet2 = xlsx.openSheet(2) # get the second worksheet
-df2 = xlsx.getAll(sheet2)
-#print(df2[2])
+loop = True
 
-user = "Marta"
+while (loop):
+    print('Wybierz słówka uzytkownika, których chcesz się uczyć: ')
+    for u in config['Users']:
+        print(f'{u}\n')
+    
+    user = input()
+    
+    val = int(input('Wybierz: \n1) Słownik - losuje słowko, po 5 s. wyswietla sie tłumaczenie\n2) Uzupelnienie zdan\nPodaj cyfre: '))
+    
+    if val == 1:
+        # DICTIONARY
+        sheet2 = xlsx.openSheet(2) # get the second worksheet
+        df2 = xlsx.getAll(sheet2)
 
-dictionary = df2[1:]
-if user == "Beata":
-    for i in dictionary: # print all
-        print(i[0:3]) # [1:] - all; [0] - row; [] - columns
-elif user == "Marta":
-    for i in dictionary: # print all
-        print(i[4:7]) # [1:] - all; [0] - row; [] - columns
+        dictionary = df2[1:]
+        if user in config['Users']:
+            
+            for sRow in range(5):
+                idx = config[user][0]
+                print(dictionary[sRow][idx])
+                time.sleep(1)
+                print(dictionary[sRow][idx+1:idx+3])
+                    
+    break
