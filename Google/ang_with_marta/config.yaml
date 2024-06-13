@@ -9,6 +9,9 @@ Beata:
 Marta:
   - 4 # index of column of worksheet
 
+dictionaryBreak: 2 # in seconds
+
+columnNames: ['week','data','Beata','tłumaczenie','t1','Marta','tłumaczenie','t2']
 
 GcpConnect:
     # Ścieżka do pliku JSON z kluczami dostępu
