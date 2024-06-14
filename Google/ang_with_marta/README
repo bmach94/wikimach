@@ -1,0 +1,10 @@
+conda activate google
+
+pip install gspread
+pip install pandas
+pip install pyyaml
+
+
+W launch.json w configuration trzeba dodać:
+"cwd" : "${workspaceFolder}/${relativeFileDirname}"
+żeby mogło znaleźc pliki otwierane przez skrypt.
