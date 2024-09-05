@@ -1,0 +1,95 @@
+```python
+from pynput import keyboard
+
+def on_press(key):
+    try:
+        print('alphanumeric key {0} pressed'.format(
+            key.char))
+    except AttributeError:
+        print('special key {0} pressed'.format(
+            key))
+
+def on_release(key):
+    print('{0} released'.format(
+        key))
+    if key == keyboard.Key.esc:
+        # Stop listener
+        return False
+
+# Collect events until released
+with keyboard.Listener(
+        on_press=on_press,
+        on_release=on_release) as listener:
+    listener.join()
+
+# ...or, in a non-blocking fashion:
+listener = keyboard.Listener(
+    on_press=on_press,
+    on_release=on_release)
+listener.start()
+```
+
+The difference between using the **blocking** method (`listener.join()`) and the **non-blocking** method (`listener.start()`) in your code lies in how the keyboard event listener interacts with the rest of your program. Let me explain each in more detail:
+
+### 1. **Blocking Mode (`listener.join()`):**
+When you use `listener.join()`, the program waits for the keyboard events and blocks any other operations from being executed until the listener is finished (e.g., when the `Esc` key is pressed to stop the listener).
+
+#### When to use it:
+- When the primary focus of your program is to listen to keyboard events.
+- When you don't have other tasks to perform concurrently with listening to the keyboard.
+- This mode is simpler if the whole purpose of the script is to monitor keyboard events.
+
+#### Example of Blocking:
+```python
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
+```
+
+In this case, the program will block and wait for key events. No other code after `listener.join()` will be executed until the listener stops.
+
+#### Pros:
+- Easy to implement.
+- Straightforward control flow since everything runs in sequence.
+
+#### Cons:
+- No parallelism: If you want your program to do other tasks while listening for keyboard input, you can't do it in this mode.
+
+---
+
+### 2. **Non-blocking Mode (`listener.start()`):**
+When you use `listener.start()`, the keyboard listener starts running **in a separate thread** and your program continues executing without waiting for the listener to finish. This allows you to listen for keyboard events in the background while the main program performs other tasks concurrently.
+
+#### When to use it:
+- When you need to run other tasks while listening for keyboard input.
+- For example, if you want to handle keyboard events while still allowing your program to do something else, such as updating a GUI, handling network requests, or doing background calculations.
+
+#### Example of Non-blocking:
+```python
+listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+listener.start()
+
+# Other code can execute here while the listener is running
+while True:
+    # Simulate some other task running in parallel
+    pass
+```
+
+In this case, the listener is running in a separate thread, so other code (in this example, an infinite loop) can continue executing simultaneously. The listener will remain active in the background.
+
+#### Pros:
+- Allows concurrent execution: You can perform other tasks while listening for keyboard input.
+- Better for complex applications that have multiple processes or tasks running concurrently (e.g., real-time processing, UI handling, etc.).
+
+#### Cons:
+- Requires careful management of multiple threads.
+- Can lead to more complex code, especially when dealing with stopping or controlling the listener thread.
+
+---
+
+### Key Differences:
+- **Blocking Mode** (`listener.join()`) holds the execution of the entire program until the listener is stopped. This is great for simple programs focused solely on capturing keyboard events.
+- **Non-blocking Mode** (`listener.start()`) allows the listener to run in the background, enabling the main program to continue executing other tasks concurrently. This is ideal for applications that need to multitask or handle more complex workflows.
+
+### When to Use Each:
+- **Use blocking mode (`listener.join()`)** when your program is only concerned with capturing keyboard input and doesn't need to perform any additional tasks while doing so.
+- **Use non-blocking mode (`listener.start()`)** when your program has other tasks that need to run concurrently, such as maintaining a GUI, processing data, or handling network requests.
