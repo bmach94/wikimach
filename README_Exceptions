@@ -1,0 +1,23 @@
+Example 4: Using else and finally
+
+Key Points:
+Use try to wrap the code that might raise an exception.
+Use except to handle specific exceptions.
+Optionally, use else to define what should happen if no exception occurs.
+Use finally to clean up resources, like closing a file or database connection, which should happen whether an exception occurs or not.
+
+The else block is executed if no exception occurs.
+The finally block is executed no matter what, even if an exception was raised. It is typically used for cleanup tasks.
+python
+
+try:
+    num = int(input("Enter a number: "))
+    result = 10 / num
+except ZeroDivisionError:
+    print("Cannot divide by zero.")
+except ValueError:
+    print("Invalid input.")
+else:
+    print(f"The result is {result}")
+finally:
+    print("This will always run, whether an exception occurs or not.")
