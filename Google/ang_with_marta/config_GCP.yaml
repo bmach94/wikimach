@@ -1,0 +1,5 @@
+GcpConnect:
+    # Ścieżka do pliku JSON z kluczami dostępu
+  credentials_file: 'secrets/angwithmarta.json'
+    # Zakres uprawnień
+  scope: ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
