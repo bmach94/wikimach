@@ -2,22 +2,20 @@ Users:
   - Beata
   - Marta
 
-
 Beata:
   - 0 # index of column of worksheet
 
 Marta:
-  - 4 # index of column of worksheet
+  - 3 # index of column of worksheet
 
-dictionaryBreak: 2 # in seconds
+dict_time_break: 2 # in seconds; break between English word and translation
 
 columnNames: ['week','data','Beata','tłumaczenie','t1','Marta','tłumaczenie','t2']
 
-GcpConnect:
-    # Ścieżka do pliku JSON z kluczami dostępu
-  credentials_file: 'secrets/angwithmarta.json'
-    # Zakres uprawnień
-  scope: ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
 Xlsx:
-  sheet_name: 'Gra w słówka'
+  sheet_name: 'GRA'
+  DOCUMENT_ID: '1De721tDfHyQ_ea1VPlKoK5cEt-3AJtx9SxX2b8PrVOc'
+  WORKSHEET_SLOWKA_ID: '215234428'
+  WORKSHEET_ZDANIA_ID: '1837591233'
+  WORKSHEET_SLOWKA_NAME: 'slowka'
+  WORKSHEET_ZDANIA_NAME: 'zdania'
