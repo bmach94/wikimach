@@ -20,3 +20,10 @@ There is 3 ways to import:
 If you want to treat the lib directory as a package (so you can import modules from it more cleanly), add an __init__.py file in the lib directory.
 and just add in script:
 from lib import mymodule
+
+When you "import a module using the package syntax," you're treating a directory as a Python package by including an __init__.py file inside that directory. This allows Python to recognize the folder as a package, which means you can import files (modules) from that directory as if it were a package.
+
+Here's a more detailed explanation with an example:
+
+What is a Package in Python?
+A package is simply a directory that contains Python modules (i.e., .py files) and has an __init__.py file inside it. The __init__.py file can be empty, but its presence tells Python that the directory should be treated as a package.
