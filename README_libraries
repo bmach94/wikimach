@@ -1,0 +1,22 @@
+## Import the own library
+
+There is 3 ways to import:
+1) From the same place where script is located.
+  from lib import mymodule
+
+2) lib is in a Different Directory
+  a)
+  # main.py
+  import sys
+  sys.path.append('/path/to/lib')
+  
+  import mymodule
+  
+  mymodule.my_function()  # Call a function from mymodule
+
+  b) export PYTHONPATH=$PYTHONPATH:/path/to/lib
+
+3)  Treat lib as a Package
+If you want to treat the lib directory as a package (so you can import modules from it more cleanly), add an __init__.py file in the lib directory.
+and just add in script:
+from lib import mymodule
